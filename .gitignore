@@ -18,16 +18,18 @@ venv/
 *.swp
 *.swo
 
-# Checkpoints and data
+# === PRIVATE: model code, training infrastructure, data ===
+# These are NOT pushed to the public GitHub repo.
+# Only plugins/ and public-facing docs go to GitHub.
+wqt20/
+ecosystem/
+configs/
+scripts/
 checkpoints/
+data/
 *.pt
 *.safetensors
 *.bin
-data/generated/
-
-# Tokenizer (regenerated)
-wqt20/tokenizer/tokenizer.json
-wqt20/tokenizer/tokenizer_meta.json
 
 # OS
 .DS_Store

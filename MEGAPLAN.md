@@ -133,9 +133,14 @@ checkpoint — do not claim practical optimization superiority.
 - [x] Eval harness (recall@k, regret, Pareto, 5 structural splits)
 - [x] 24 tests passing
 - [x] **Smoke training — H1 gate PASSED** (recall@1: 0.967 vs random 0.123)
-- [ ] Generate oracle/search trajectories (Part XIX step 13)
-- [ ] Train WQT20-PILOT (step 14)
+- [x] 12-domain math curriculum (A-L, Part III)
+- [x] Streaming multiprocessing data pipeline
+- [x] **1M training examples generated** (50s, 20K/s, 1.1GB)
+- [x] Public/private repo split (plugins/ public, model+data private)
+- [x] Public plugins scaffold (Qiskit, TKET, PyZX, SDK)
+- [ ] Train WQT20-PILOT on 1M curriculum (step 14)
 - [ ] Freeze evaluation methodology (step 15)
 - [ ] Train WQT20-1.0 (step 16)
-- [ ] Integrate Qiskit + TKET (step 17)
+- [ ] Publish model to HuggingFace (step 17)
+- [ ] Full plugin implementations (step 17)
 - [ ] Open release (step 18)

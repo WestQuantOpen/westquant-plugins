@@ -8,6 +8,14 @@ Two parallel projects sharing one core:
 
 Principle: **AI schedules. Deterministic mathematics executes. Independent verification certifies.**
 
+## Public vs Private split
+
+- **`plugins/`** — PUBLIC. Pushed to `github.com/WestQuantOpen`. Contains Qiskit,
+  TKET, PyZX adapters + WestQuant SDK. Links to WQT20 on HuggingFace.
+- **`wqt20/`, `ecosystem/`, `data/`, `configs/`, `scripts/`** — PRIVATE. Stays
+  local. Model code, training infrastructure, generated data, checkpoints.
+- `.gitignore` excludes all private directories from commits.
+
 ## Environment
 
 - macOS Apple Silicon (M5 Max), 128GB RAM
@@ -26,6 +34,9 @@ Principle: **AI schedules. Deterministic mathematics executes. Independent verif
 # Build tokenizer
 ./scripts/build_tokenizer.sh
 
+# Generate 1M training examples (50s, 20K/s)
+python -m wqt20.data.pipeline --n 1000000 --out data/wqt20-curriculum-v1 --workers 8
+
 # Smoke training (H1 gate: beats random)
 ./scripts/run_smoke.sh
 # or: python -m wqt20.train --n 3000 --epochs 8 --batch-size 64 --lr 1e-4
@@ -33,6 +44,15 @@ Principle: **AI schedules. Deterministic mathematics executes. Independent verif
 # Inspect model
 python -m wqt20.model
 ```
+
+## Data generation
+
+- 12 curriculum domains (A-L) covering the full WQT20 math spec
+- Streaming multiprocessing pipeline: `wqt20/data/pipeline.py`
+- Output: per-domain JSONL + combined `all_examples.jsonl` + provenance ledger
+- 1M examples generated in 50s at ~20K/s, 1.1GB total
+- Domain weights (Part IX): L (scheduling) 16%, C (Pauli) 12%, F (Hamiltonian) 12%, rest 5-8% each
+- Re-generate with: `python -m wqt20.data.pipeline --n N --out data/DIR --workers W`
 
 ## Architecture conventions
 
@@ -71,13 +91,14 @@ python -m wqt20.model
 10. Smoke dataset ✓
 11. **Verify learned policy beats random** ✓ (H1 gate PASSED)
 12. Scale to 20M ✓ (19.06M)
-13. Generate oracle/search trajectories — next
-14. Train WQT20-PILOT — pending
+13. **Generate 1M training examples** ✓ (50s, 20K/s)
+14. Train WQT20-PILOT — next
 15. Freeze evaluation methodology — pending
 16. Train WQT20-1.0 — pending
-17. Integrate Qiskit + TKET — pending
+17. Integrate Qiskit + TKET — pending (plugins scaffolded)
 18. Open release — pending
 
 ## Version history
 
 - v0.1.0: initial scaffold + smoke training (H1 gate passed)
+- v0.1.1: 12-domain curriculum + 1M example pipeline + public/private split

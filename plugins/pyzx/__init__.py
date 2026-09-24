@@ -1,0 +1,1 @@
+"""WestQuant plugin."""
