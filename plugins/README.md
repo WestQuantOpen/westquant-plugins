@@ -4,36 +4,54 @@ Official plugins for the **WQT20M** quantum representation scheduling model.
 
 > AI schedules. Deterministic mathematics executes. Independent verification certifies.
 
-## What WQT20M Does — 3 Examples
+## What WQT20M Does — 3 Tested Examples
 
-### Example 1: Better Postselection Probability
+### Example 1: Preference Comparison (96% accuracy)
 
-```
-Problem:  Shor's algorithm on 10 qubits, naive scheduling
-          → 20% postselection probability
-
-          WQT20M-Beta schedules the transformations
-          → same algorithm, same output, 90% postselection probability
-```
-
-### Example 2: Fewer Two-Qubit Gates
+Given two candidate transformations with their costs, the model predicts
+which is better:
 
 ```
-Problem:  QAOA circuit with 50 two-qubit gates, naive transpilation
-          → 50 gates, depth 40, error 0.15
+State:    <DOMAIN:quantum_annealing> <LEVEL:ISING> <N_QUBITS:18> ...
+          <RES:n_q=18 D=8 G1=12 G2=4 T=0 M=3 A=0 E=0.0100 C=1.0000>
+          <OBJ_TYPE:balanced>
 
-          WQT20M-Beta picks the right gate fusion + cancellation order
-          → 31 gates, depth 22, error 0.08
+Candidate A: QUENCH          (cost 1278.25)
+Candidate B: SET_BIAS        (cost 1245.57)
+
+Model predicts: B>A   (SET_BIAS is better)
+Correct answer: B>A   ✓
 ```
 
-### Example 3: Hardware-Aware Routing
+### Example 2: Value Prediction (mean error ~8)
+
+Given a state, the model predicts the cost-to-go:
 
 ```
-Problem:  8-qubit circuit on heavy-hex topology, naive routing
-          → 12 SWAP gates inserted
+State:    <DOMAIN:graph_optimization> <LEVEL:GRAPH> <N_NODES:21> ...
+          <RES:n_q=21 D=5 G1=10 G2=3 T=0 M=2 A=0 E=0.0100 C=1.0000>
+          <OBJ_TYPE:balanced>
 
-          WQT20M-Beta schedules SABRE_ROUTE + NATIVE_GATESET
-          → 3 SWAP gates inserted, 75% reduction
+Model predicts cost-to-go: 1275.93
+Actual cost-to-go:         1264.63
+Error:                     11.30 (0.9%)
+```
+
+### Example 3: Ranked Policy (73% Top-1 via value ranking)
+
+Given a state and all legal candidate actions, the model ranks them by
+predicted cost and picks the best:
+
+```
+State:    <DOMAIN:hardware_mapping> <LEVEL:COMPILED> <N_QUBITS:12> ...
+          <OBJ_TYPE:2q_focused>
+
+Candidates ranked by predicted cost:
+  1. NOISE_AWARE        predicted=620.83   ← model picks this
+  2. LAYOUT_SCORE       predicted=631.83
+  3. DENSE_PLACE        predicted=639.83
+
+Oracle (actual best):   NOISE_AWARE        ✓ Correct!
 ```
 
 ---
@@ -48,19 +66,18 @@ pip install transformers torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
 
-# Load the model
 model = AutoModelForCausalLM.from_pretrained("WestQuantStudio/WQT20M-Beta")
 tokenizer = AutoTokenizer.from_pretrained("WestQuantStudio/WQT20M-Beta")
 device = "mps" if torch.backends.mps.is_available() else "cpu"
 model = model.to(device).eval()
 
-# Ask: which transformation is better?
-text = ("<SOLVE> <DOMAIN:graph_optimization> <LEVEL:GRAPH> "
-        "<N_NODES:16> <DENSITY:0.5000> "
-        "<RES:n_q=16 D=5 G1=10 G2=3 T=0 M=2 A=0 E=0.0100 C=1.0000> "
+# Which transformation is better?
+text = ("<SOLVE> <DOMAIN:quantum_annealing> <LEVEL:ISING> "
+        "<N_QUBITS:18> <N_GROUND:14> <COUPLING_STRENGTH:0.8000> "
+        "<RES:n_q=18 D=8 G1=12 G2=4 T=0 M=3 A=0 E=0.0100 C=1.0000> "
         "<OBJ_TYPE:balanced> "
-        "<CAND_A> MAXCUT_ROUND <COST_A> 150.00 "
-        "<CAND_B> TSP_ROUTE <COST_B> 200.00 "
+        "<CAND_A> QUENCH <COST_A> 1278.25 "
+        "<CAND_B> SET_BIAS <COST_B> 1245.57 "
         "<PREF>")
 
 ids = tokenizer.encode(text, add_special_tokens=False, return_tensors="pt").to(device)
@@ -72,8 +89,8 @@ with torch.no_grad():
         if nxt.item() == tokenizer.eos_token_id:
             break
 
-result = tokenizer.decode(ids[0].tolist()).split("<PREF>")[-1].strip()
-print(result)  # → "A>B" (MAXCUT_ROUND is better because cost 150 < 200)
+print(tokenizer.decode(ids[0].tolist()).split("<PREF>")[-1].strip())
+# → "B>A" (SET_BIAS is better because cost 1245 < 1278)
 ```
 
 ---
@@ -83,13 +100,10 @@ print(result)  # → "A>B" (MAXCUT_ROUND is better because cost 150 < 200)
 | Task | Input | Output | Accuracy |
 |------|-------|--------|----------|
 | **Preference** | State + 2 candidates with costs | Which candidate is better | 96.1% |
-| **Value** | State | Predicted cost-to-go | Spearman 0.98 |
+| **Value** | State | Predicted cost-to-go | Spearman 0.98, mean error ~8 |
+| **Ranked Policy** | State + all legal actions | Best action (via value ranking) | 73% Top-1 |
 | **Legality** | State + action | Is this action legal? | 76.9% |
 | **Hardware** | State + backend | Is this feasible? | 91.2% |
-
-The model excels at **preference comparison** and **value prediction**. Use
-these for model-guided search: score each candidate by predicted value, then
-pick the best.
 
 ---
 
@@ -103,9 +117,6 @@ pick the best.
 | Context length | 2048 |
 | Vocab | 4561 (quantum-native structured tokens + BPE) |
 
-Standard HuggingFace `LlamaForCausalLM`. Compatible with `AutoModelForCausalLM`,
-`AutoTokenizer`, and SafeTensors.
-
 **Model card:** [huggingface.co/WestQuantStudio/WQT20M-Beta](https://huggingface.co/WestQuantStudio/WQT20M-Beta)
 
 ---
@@ -118,6 +129,7 @@ All 6 release gates passed. Key results:
 |--------|-------|
 | Preference accuracy | 96.1% |
 | Value prediction (Spearman) | 0.98 |
+| Ranked policy Top-1 | 73% (via value ranking) |
 | Search improvement (budget=100) | +35% over random |
 | ID-only accuracy | 24% (no cheating) |
 | Generalization (unseen instances) | 96% |
@@ -158,6 +170,17 @@ pip install westquant-plugins[pyzx]
    exhausted.
 
 The model never executes transformations directly. It only schedules.
+
+---
+
+## Limitations
+
+This is a **Beta** release:
+- **Policy generation: 0.8%** — Use value ranking instead (73% Top-1)
+- **Legality: 76.9%** — Below target
+- **Objective sensitivity: 0%** — Model doesn't change predictions with objective
+- **Synthetic training** — Not trained on real QPU data
+- **Not a circuit compiler** — Works on structured state representation, not raw circuits
 
 ---
 
