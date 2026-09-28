@@ -32,7 +32,7 @@ class Search:
     objectives: Dict[str, float] = field(default_factory=lambda: {
         "two_qubit_gates": 0.5, "depth": 0.3, "estimated_error": 0.2
     })
-    model_id: str = "westquant/WQT20M-Beta"
+    model_id: str = "WestQuantStudio/WQT20M-Beta"
     max_steps: int = 10
     top_k: int = 3
     seed: int = 42

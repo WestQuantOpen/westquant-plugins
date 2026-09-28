@@ -11,7 +11,7 @@ from typing import Any, Dict, Optional
 
 @dataclass
 class TKETAdapter:
-    model: str = "westquant/WQT20-1.0"
+    model: str = "WestQuantStudio/WQT20M-Beta"
     backend: str = "Quantinuum:H2-1"
     _model: Any = None
     _tokenizer: Any = None

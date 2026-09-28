@@ -24,7 +24,7 @@ all = ["qiskit>=1.0", "pytket>=1.30", "pytket-qiskit", "pyzx>=0.9"]
 
 [project.urls]
 Homepage = "https://github.com/WestQuantOpen/westquant-plugins"
-Model = "https://huggingface.co/westquant/WQT20M-Beta"
+Model = "https://huggingface.co/WestQuantStudio/WQT20M-Beta"
 
 [tool.setuptools]
 packages = ["plugins", "plugins.qiskit", "plugins.tket", "plugins.pyzx", "plugins.westquant_sdk"]

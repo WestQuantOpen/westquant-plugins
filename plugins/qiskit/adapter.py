@@ -5,7 +5,7 @@ WQT20 ranks transformations; Qiskit executes them; verification certifies.
 
 Usage:
     from westquant.plugins.qiskit import QiskitAdapter
-    adapter = QiskitAdapter(model="westquant/WQT20-1.0", backend="ibm_brisbane")
+    adapter = QiskitAdapter(model="WestQuantStudio/WQT20M-Beta", backend="ibm_brisbane")
     result = adapter.optimize(circuit, objectives={"two_qubit_gates": 0.5, "depth": 0.3})
 """
 from __future__ import annotations
@@ -21,7 +21,7 @@ class QiskitAdapter:
     WQT20 decides which representation-level transformations are promising.
     Qiskit handles gate-level synthesis, routing, and native-gate decomposition.
     """
-    model: str = "westquant/WQT20-1.0"  # HuggingFace model ID
+    model: str = "WestQuantStudio/WQT20M-Beta"  # HuggingFace model ID
     backend: str = "ibm_brisbane"
     api_key: Optional[str] = None
     _model: Any = None
