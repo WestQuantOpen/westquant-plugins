@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "westquant-plugins"
-version = "0.1.0"
+version = "0.2.0"
 description = "Official plugins for WQT20 quantum representation scheduling model"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
 authors = [{name = "WestQuant"}]
-keywords = ["quantum", "scheduling", "optimization", "wqt20", "qiskit", "tket", "pyzx"]
+keywords = ["quantum", "scheduling", "optimization", "wqt20", "wqt20m", "qiskit", "tket", "pyzx"]
 dependencies = [
     "torch>=2.0",
     "transformers>=4.44",
@@ -24,7 +24,7 @@ all = ["qiskit>=1.0", "pytket>=1.30", "pytket-qiskit", "pyzx>=0.9"]
 
 [project.urls]
 Homepage = "https://github.com/WestQuantOpen/westquant-plugins"
-Model = "https://huggingface.co/westquant/WQT20-1.0"
+Model = "https://huggingface.co/westquant/WQT20M-Beta"
 
 [tool.setuptools]
 packages = ["plugins", "plugins.qiskit", "plugins.tket", "plugins.pyzx", "plugins.westquant_sdk"]

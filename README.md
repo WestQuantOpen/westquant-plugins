@@ -41,10 +41,12 @@ public-facing docs are committed to the public repo.
 - [x] Eval harness (recall@k, regret, Pareto, structural splits)
 - [x] Smoke training — **H1 gate PASSED** (recall@1: 0.967 vs random 0.123)
 - [x] Public plugins scaffold (Qiskit, TKET, PyZX, SDK)
-- [ ] Pilot training on 1M curriculum
-- [ ] WQT20-1.0
+- [x] **WQT20M-Beta trained** (19.06M params, 102.9M records, 15 domains)
+- [x] **10x validation suite** — all 6 gates PASSED
+- [x] **WQT20M-Beta release** — model card + HuggingFace-ready
 - [ ] Publish model to HuggingFace
 - [ ] Full plugin implementations
+- [ ] WQT20M-1.0 (policy Top-1, legality, objective counterfactuals)
 
 ## Quick start (local development)
 
