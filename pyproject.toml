@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "westquant"
-version = "0.1.0"
-description = "WestQuant Open Source: WQT20 representation scheduling transformer + ecosystem"
+version = "0.2.0"
+description = "WestQuant Open Source: WQT20M quantum representation scheduling model + plugins"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
@@ -13,22 +13,9 @@ authors = [{name = "WestQuant"}]
 dependencies = [
     "torch>=2.0",
     "transformers>=4.44",
-    "tokenizers>=0.19",
-    "safetensors>=0.4",
-    "numpy<2",
-    "pyyaml",
-    "tqdm",
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7", "pytest-cov"]
 qiskit = ["qiskit>=1.0"]
 tket = ["pytket>=1.30"]
 pyzx = ["pyzx>=0.9"]
-
-[tool.setuptools]
-packages = ["wqt20", "wqt20.data", "wqt20.search", "wqt20.eval", "wqt20.tests", "ecosystem"]
-
-[tool.pytest.ini_options]
-testpaths = ["wqt20/tests"]
-python_files = ["test_*.py"]

@@ -18,9 +18,7 @@ venv/
 *.swp
 *.swo
 
-# === PRIVATE: model code, training infrastructure, data ===
-# These are NOT pushed to the public GitHub repo.
-# Only plugins/ and public-facing docs go to GitHub.
+# Private directories (not published)
 wqt20/
 ecosystem/
 configs/

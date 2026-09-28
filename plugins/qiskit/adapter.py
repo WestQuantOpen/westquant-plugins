@@ -51,7 +51,7 @@ class QiskitAdapter:
         if self._model is None:
             self.load()
         objectives = objectives or {"two_qubit_gates": 0.5, "depth": 0.3, "estimated_error": 0.2}
-        # TODO: implement full pipeline
+        # TODO: implement full optimization loop
         # 1. Serialize circuit to WQIR state
         # 2. Ask WQT20 to rank legal transformations
         # 3. Apply top-k via Qiskit transpiler passes

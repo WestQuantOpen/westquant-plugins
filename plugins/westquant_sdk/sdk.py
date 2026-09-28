@@ -2,7 +2,7 @@
 
 The public-facing SDK that loads the WQT20 model from HuggingFace and provides
 the `westquant.Search(...)` API. This is the main entry point for users who
-want to use WQT20 without the full training/development stack.
+want to use WQT20M for quantum representation scheduling.
 
     from westquant import Search
     result = Search(

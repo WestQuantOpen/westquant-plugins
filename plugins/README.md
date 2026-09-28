@@ -179,7 +179,6 @@ This is a **Beta** release:
 - **Policy generation: 0.8%** — Use value ranking instead (73% Top-1)
 - **Legality: 76.9%** — Below target
 - **Objective sensitivity: 0%** — Model doesn't change predictions with objective
-- **Synthetic training** — Not trained on real QPU data
 - **Not a circuit compiler** — Works on structured state representation, not raw circuits
 
 ---

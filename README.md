@@ -139,13 +139,11 @@ All 6 release gates passed:
 
 ---
 
-## Public vs Private
+## Repository
 
-- **`plugins/`** — public. Contains Qiskit, TKET, PyZX adapters and the
-  WestQuant SDK. Links to WQT20M on HuggingFace.
-- **`wqt20/`, `ecosystem/`, `data/`, `configs/`, `scripts/`** — private.
-  Model code, training infrastructure, generated data, checkpoints. Not
-  pushed to public GitHub.
+This repo contains the public plugins (Qiskit, TKET, PyZX adapters + SDK)
+that connect WQT20M to quantum frameworks. The model itself is hosted on
+HuggingFace.
 
 ## License
 
